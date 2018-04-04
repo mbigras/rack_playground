@@ -56,4 +56,18 @@ class Lobster
 
 end
 
-Rack::Handler::WEBrick.run(Lobster.new, :Port => 9292)
+class C
+  def initialize(app)
+    @app = app
+  end
+
+  def call(env)
+    res = @app.call(env)
+    res[1]['Cats'] = 'Dogs'
+    res
+  end
+end
+
+rack = C.new(Lobster.new)
+
+Rack::Handler::WEBrick.run(rack, :Port => 9292)
